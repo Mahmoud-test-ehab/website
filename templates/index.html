@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Countdown</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Next Lecture: CCNA</h1>
+        <p>Time left until next lecture: <strong>{{ countdown_time }}</strong></p>
+        <a href="https://meet.google.com" class="start-lecture-btn">Start Lecture</a>
+
+        <h2>Previous Meetings</h2>
+        <ul>
+            {% for file in recordings %}
+                <li><a href="https://drive.google.com/file/d/{{ file['id'] }}/view" target="_blank">{{ file['name'] }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
