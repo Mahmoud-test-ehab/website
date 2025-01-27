@@ -13,16 +13,19 @@ app.secret_key = os.urandom(24)  # Used for session management
 
 # Load credentials from the OAuth client
 def authenticate_google_account():
-    # Check if we have valid credentials stored
     creds = None
     if 'credentials' in session:
         creds = session['credentials']
     if not creds or not creds.valid:
-        # If no valid credentials are available, let the user log in
-        flow = InstalledAppFlow.from_client_secrets_file(
-            'credentials.json', SCOPES)
-        creds = flow.run_local_server(port=0)
-        session['credentials'] = creds
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            # Load credentials from the environment variable instead of a file
+            credentials_json = os.environ['GOOGLE_CREDENTIALS']
+            credentials_dict = json.loads(credentials_json)
+            flow = InstalledAppFlow.from_client_config(credentials_dict, SCOPES)
+            creds = flow.run_local_server(port=0)
+            session['credentials'] = creds
     return creds
 
 # Fetch the next lecture event from Google Calendar
